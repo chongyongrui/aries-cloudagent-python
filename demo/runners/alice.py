@@ -42,7 +42,7 @@ class AliceAgent(AriesAgent):
             ident,
             http_port,
             admin_port,
-            prefix="Alice",
+            prefix="User",
             no_auto=no_auto,
             seed=None,
             aip=aip,
@@ -116,7 +116,7 @@ async def main(args):
             )
         )
         agent = AliceAgent(
-            "alice.agent",
+            "user.agent",
             alice_agent.start_port,
             alice_agent.start_port + 1,
             genesis_data=alice_agent.genesis_txns,

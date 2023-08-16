@@ -6,6 +6,9 @@ import sys
 import time
 import datetime
 
+
+
+
 from aiohttp import ClientError
 from qrcode import QRCode
 
@@ -27,6 +30,15 @@ from runners.support.utils import (  # noqa:E402
     prompt,
     prompt_loop,
 )
+
+#from runners.VerfierGUI import *
+##import runners
+#localparams = runners.VerfierGUI.params
+#name = localparams[0]
+#nric = localparams[1]
+#bdate = localparams[2]
+
+#print("name is " + name + "\n nric is " + nric + "\n bdate is " + bdate)
 
 
 CRED_PREVIEW_TYPE = "https://didcomm.org/issue-credential/2.0/credential-preview"

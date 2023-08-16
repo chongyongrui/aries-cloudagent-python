@@ -6,6 +6,7 @@ WORKDIR /src
 ADD . .
 
 RUN pip install setuptools wheel
+RUN pip install tk
 RUN python setup.py sdist bdist_wheel
 
 FROM python:${python_version}-slim-bullseye AS main

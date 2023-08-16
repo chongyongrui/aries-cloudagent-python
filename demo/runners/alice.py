@@ -23,6 +23,8 @@ from runners.support.utils import (  # noqa:E402
     prompt_loop,
 )
 
+#from runners.VerfierGUI import *
+
 logging.basicConfig(level=logging.WARNING)
 LOGGER = logging.getLogger(__name__)
 

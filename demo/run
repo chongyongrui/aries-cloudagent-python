@@ -150,10 +150,21 @@ done
 input_string="$AGENT"
 pattern="^user[0-9]+$"
 pattern2="^superuser[0-9]+$"
+pattern3="^[a-zA-Z]+\.[a-zA-Z]+[0-9]+$"
 if [ "$AGENT" = "superadmin" ]; then
    AGENT_MODULE="faber"
    AGENT_PORT=6000
    AGENT_PORT_RANGE=6000-6009
+elif [[ $input_string =~ $pattern3 ]]; then
+  usernumber="${BASH_REMATCH[1]}"
+  usernumber=$((usernumber))
+  declare -i startPort
+  startPort=$(( 5000 + usernumber * 10 ))
+  declare -i endPort
+  endPort=$(( 5009 + usernumber * 10 ))
+  AGENT_MODULE="alice"
+  AGENT_PORT=$startPort
+  AGENT_PORT_RANGE="$startPort-$endPort"
 elif [[ $input_string =~ $pattern2 ]]; then
   usernumber=$(echo "$input_string" | grep -o '[0-9]\+')
   declare -i startPort
@@ -176,6 +187,8 @@ else
   echo "$input_string does not match the desired pattern."
   exit 1
 fi
+
+
 
 # Print the variables for verification
 echo "AGENT_MODULE: $AGENT_MODULE"

@@ -66,7 +66,8 @@ class AliceAgent(AriesAgent):
 
 async def input_invitation(agent_container):
     agent_container.agent._connection_ready = asyncio.Future()
-    async for details in prompt_loop("Invite details: "):
+    #async for details in prompt_loop("Invite details: "):
+    async for details in prompt_loop("Agent is running"):
         b64_invite = None
         try:
             url = urlparse(details)
@@ -117,8 +118,10 @@ async def main(args):
                 else ""
             )
         )
+        userNumber = (alice_agent.start_port-8000) /10
+       
         agent = AliceAgent(
-            "user.agent",
+            "user" + str(userNumber) + ".agent",
             alice_agent.start_port,
             alice_agent.start_port + 1,
             genesis_data=alice_agent.genesis_txns,
@@ -136,7 +139,7 @@ async def main(args):
 
         await alice_agent.initialize(the_agent=agent)
 
-        log_status("#9 Input faber.py invitation details")
+        log_status("Use swagger UI for ACA-py functions!")
         await input_invitation(alice_agent)
 
         options = "    (3) Send Message\n" "    (4) Input New Invitation\n"

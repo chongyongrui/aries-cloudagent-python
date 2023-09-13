@@ -126,27 +126,61 @@ EOF
   esac
   ARGS="${ARGS:+$ARGS }$i"
 done
+# original if else cconditions
 
-if [ "$AGENT" = "faber" ]; then
+#if [ "$AGENT" = "faber" ]; then
+#  AGENT_MODULE="faber"
+#   AGENT_PORT=8020
+#   AGENT_PORT_RANGE=8020-8029
+# elif [ "$AGENT" = "alice" ]; then
+#   AGENT_MODULE="alice"
+#   AGENT_PORT=8030
+#   AGENT_PORT_RANGE=8030-8039
+# elif [ "$AGENT" = "acme" ]; then
+#   AGENT_MODULE="acme"
+#   AGENT_PORT=8040
+#   AGENT_PORT_RANGE=8040-8049
+#else
+ # echo "Please specify which agent you want to run. Choose from 'faber', 'alice', 'acme', or 'performance'."
+ # exit 1
+
+
+
+
+input_string="$AGENT"
+pattern="^user[0-9]+$"
+pattern2="^superuser[0-9]+$"
+if [ "$AGENT" = "superadmin" ]; then
+   AGENT_MODULE="faber"
+   AGENT_PORT=6000
+   AGENT_PORT_RANGE=6000-6009
+elif [[ $input_string =~ $pattern2 ]]; then
+  usernumber=$(echo "$input_string" | grep -o '[0-9]\+')
+  declare -i startPort
+  startPort=$(( 7000 + $usernumber * 10 ))
+  declare -i endPort
+  endPort=$(( 7009 + $usernumber * 10 ))
   AGENT_MODULE="faber"
-  AGENT_PORT=8020
-  AGENT_PORT_RANGE=8020-8029
-elif [ "$AGENT" = "alice" ]; then
+  AGENT_PORT=$startPort
+  AGENT_PORT_RANGE="$startPort-$endPort"
+elif [[ $input_string =~ $pattern ]]; then
+  usernumber=$(echo "$input_string" | grep -o '[0-9]\+')
+  declare -i startPort
+  startPort=$(( 8000 + $usernumber * 10 ))
+  declare -i endPort
+  endPort=$(( 8009 + $usernumber * 10 ))
   AGENT_MODULE="alice"
-  AGENT_PORT=8030
-  AGENT_PORT_RANGE=8030-8039
-elif [ "$AGENT" = "acme" ]; then
-  AGENT_MODULE="acme"
-  AGENT_PORT=8040
-  AGENT_PORT_RANGE=8040-8049
-elif [ "$AGENT" = "performance" ]; then
-  AGENT_MODULE="performance"
-  AGENT_PORT=8050
-  AGENT_PORT_RANGE=8050-8069
+  AGENT_PORT=$startPort
+  AGENT_PORT_RANGE="$startPort-$endPort"
 else
-  echo "Please specify which agent you want to run. Choose from 'faber', 'alice', 'acme', or 'performance'."
+  echo "$input_string does not match the desired pattern."
   exit 1
 fi
+
+# Print the variables for verification
+echo "AGENT_MODULE: $AGENT_MODULE"
+echo "AGENT_PORT: $AGENT_PORT"
+echo "AGENT_PORT_RANGE: $AGENT_PORT_RANGE"
 
 echo "Preparing agent image..."
 docker build -q -t acapy-base -f ../docker/Dockerfile .. || exit 1
@@ -258,3 +292,9 @@ $DOCKER run --name $AGENT --rm -it ${DOCKER_OPTS} \
   ${DOCKER_VOL} \
   $DOCKER_ENV \
   faber-alice-demo $AGENT_MODULE --port $AGENT_PORT $ARGS
+
+if [ "$AGENT_MODULE" = "alice" ]; then
+  $DOCKER rename alice $AGENT
+elif [ "$AGENT_MODULE" = "favber" ]; then
+  $DOCKER rename faber $AGENT 
+fi

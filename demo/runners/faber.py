@@ -65,7 +65,7 @@ class FaberAgent(AriesAgent):
             ident,
             http_port,
             admin_port,
-            prefix="Verifier",
+            prefix="SuperUser",
             no_auto=no_auto,
             endorser_role=endorser_role,
             revocation=revocation,
@@ -398,8 +398,15 @@ async def main(args):
                 else ""
             )
         )
+
+        if faber_agent.start_port < 7000:
+            username = "SuperAdmin.agent"
+        else:
+            userNumber = (faber_agent.start_port-7000) /10
+            username = "superuser" + str(userNumber) + 
+        
         agent = FaberAgent(
-            "Verifier.agent",
+            username,
             faber_agent.start_port,
             faber_agent.start_port + 1,
             genesis_data=faber_agent.genesis_txns,
